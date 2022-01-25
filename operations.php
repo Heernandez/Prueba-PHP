@@ -235,15 +235,88 @@ function obtener_cliente($id){
    
 }
 
+function factura_existe($id){
 
+    # valida si un idFactura condultado existe, retorna true o false en caso contrario
+    $conn = db_connect();
+    $resultado = false;
+    try{
+        $sql = "select * from SALE where IDFACTURA =".$id;
+        $res = $conn->query($sql)->fetch();
+        if ($res){
+              
+            $resultado = true;
+        }
+        else{
+            $resultado = false;
+        }  
+                              
+    }
+    catch (PDOException $e){
+        #echo $e->getMessage();
+        $resultado = false;
+    }
+    $conn = NULL;
+    return $resultado;
 
+}
 
+function guardar_venta($data=NULL){
 
+    $data = array(
+        array("IDPRODUCTO"=>"10001","IDCLIENTE"=>"1235","CANTIDAD"=>10,"VALOR"=>10),
+        array("IDPRODUCTO"=>"10002","IDCLIENTE"=>"1235","CANTIDAD"=>10,"VALOR"=>20),
+        array("IDPRODUCTO"=>"10003","IDCLIENTE"=>"1235","CANTIDAD"=>10,"VALOR"=>30),
+        array("IDPRODUCTO"=>"10004","IDCLIENTE"=>"1235","CANTIDAD"=>10,"VALOR"=>40),
+    );
+    /*
+    $data = array(
+        array("IDPRODUCTO"=>"10001","IDCLIENTE"=>"1234","CANTIDAD"=>10,"VALOR"=>10),
+        array("IDPRODUCTO"=>"10002","IDCLIENTE"=>"1234","CANTIDAD"=>10,"VALOR"=>20),
+        array("IDPRODUCTO"=>"10003","IDCLIENTE"=>"1234","CANTIDAD"=>10,"VALOR"=>30),
+        array("IDPRODUCTO"=>"10004","IDCLIENTE"=>"1234","CANTIDAD"=>10,"VALOR"=>40),
+    );
+    */
+    # Generacion de ID Unico para la factura
+    $generacion = true;
+    $id = NULL;
+    do{ 
+        $idFactura = uniqid("FAC");
+        $generacion = factura_existe($idFactura);
+    }
+    while($generacion);
+    # Captura de la fecha actual para el registrar en la venta
+    
+    $fecha = (string)(date("Y"))."-".(string)(date("m"))."-".(string)(date("d"));
+    #echo "la fecha es $fecha";
 
+    # Se supone, los datos de la venta llegan en una lista ( todos de la misma venta) con los campos : IDPRODUCTO,IDCLIENTE,CANTIDAD,VALOR (se recibe el valor unit, y se calcula el valor y se revisa si aplica desc)
 
+    $conn = db_connect();
+    $resultado = false;
+    try{
+        foreach($data as $item){
+            $values = "("."'".$idFactura."','".
+                    $item["IDPRODUCTO"]."','".
+                    $item["IDCLIENTE"]."',".
+                    $item["CANTIDAD"].",".
+                    ($item["CANTIDAD"] >5 ? 0.9*$item["VALOR"]*$item["CANTIDAD"]:$item["VALOR"]*$item["CANTIDAD"]).",'".
+                    $fecha."');";
+            
+            $res = $conn->query("insert into sale values ".$values);
+            
+        }
+        $resultado = true;
+    }
+    catch (PDOException $e){
+        echo $e->getMessage();
+        $resultado = false;
+    }
+    
+    $conn = NULL;
+    return $resultado;
 
-
-
+}
 
 
 

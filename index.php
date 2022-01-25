@@ -28,6 +28,11 @@
         <input type="submit" value ="Agregar Nuevo Producto">
     </form>
 
+    <h2>Registrar Compra </h2>
+    <form action="sale.php" method="post">
+        <input type="submit" value ="Realizar Facturacion">
+    </form>
+
     <h2>Reportes </h2>
     <form action="reports.php" method="post">
         <input type="submit" value ="Ir a Generacion de Reportes">

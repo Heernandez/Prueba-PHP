@@ -123,13 +123,16 @@ function productos_cliente_rango($inicio,$fin){
     $resultado = false;
    
     try{
-        $sql = 'select s.IDPRODUCTO,R.NOMBRE,SUM(s.CANTIDAD) AS CANTIDAD
-                from sale as s, (SELECT * FROM PRODUCT) AS R
-                where FECHAVENTA >="'.$limite[0].'" and FECHAVENTA <="'.$limite[1].'"
-                and s.IDPRODUCTO = R.IDPRODUCTO
-                group by s.IDPRODUCTO
-                ORDER BY CANTIDAD DESC
-                LIMIT 5;';
+        $sql = 'SELECT c.NOMBRE AS NOMBRE_CLIENTE,P.NOMBRE AS NOMBRE_PRODUCTO,SUM(s.VALOR) AS VALOR
+                FROM sale as s, (SELECT * FROM CUSTOMER) as C,(SELECT * FROM PRODUCT) as P
+                where FECHAVENTA >="'.$inicio.'" and FECHAVENTA <="'.$fin.'"
+                and  s.IDCLIENTE = C.IDCLIENTE AND
+                S.IDPRODUCTO = P.IDPRODUCTO
+                GROUP BY s.IDCLIENTE,s.IDPRODUCTO
+                ORDER BY s.IDCLIENTE DESC
+                ';
+
+
         #echo $sql;
         $resultado = $conn->query($sql);
     }
@@ -138,6 +141,7 @@ function productos_cliente_rango($inicio,$fin){
         $resultado = false;
     }
     $conn = NULL;
+    #var_dump($resultado);
     return $resultado;
 }
 

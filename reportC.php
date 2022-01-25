@@ -12,13 +12,14 @@ include 'operationsR.php';
     <table width="70%" border="1px" align="center">
 
     <tr align="center">
-        <td>Id Cliente</td>
         <td>Nombre Cliente</td>
+        <td>Nombre Producto</td>
         <td>Valor Compra</td>
     </tr>
     <?php 
        
         $resultados = productos_cliente_rango($_POST["FechaInicio"],$_POST["FechaFin"])->fetchAll();
+        var_dump($resultados);
 
         if (!$resultados){
             echo "<tr><td colspan=3 style ='text-align:center'>No hay ventas registradas en el rango de consulta.</td></tr>";
@@ -27,9 +28,9 @@ include 'operationsR.php';
             foreach($resultados as $datos){
                 ?>
                     <tr>
-                        <td><?php echo $datos["CLIENTE"]?></td>
-                        <td><?php echo $datos["PRODUCTO"]?></td>
-                        <td><?php echo $datos["CANTIDAD"]?></td>
+                        <td><?php echo $datos["NOMBRE_CLIENTE"]?></td>
+                        <td><?php echo $datos["NOMBRE_PRODUCTO"]?></td>
+                        <td><?php echo $datos["VALOR"]?></td>
                     </tr>
                 <?php   
             }
