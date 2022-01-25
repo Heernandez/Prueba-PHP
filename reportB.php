@@ -1,6 +1,5 @@
 <?php
-include 'operations.php';
-
+include 'operationsR.php';
 ?>
 <!DOCTYPE html>
 <html>
@@ -8,21 +7,20 @@ include 'operations.php';
     <title></title>
 </head>
 <body>
-    <h1 align="center">LISTADO DE PRODUCTOS</h1>
+    
+    <h1 align="center"><?php echo "PRODUCTOS MAS VENDIDOS EN ".strtoupper($_POST["mes"])." ".strtoupper($_POST["anho"]) ?></h1>
     <table width="70%" border="1px" align="center">
 
     <tr align="center">
-        <td>Codigo del Producto</td>
-        <td>Nombre</td>
-        <td>Descripcion</td>
-        <td>Valor Unitario</td>
-        <td>Cantidad Disponible</td>
+        <td>Id Cliente</td>
+        <td>Nombre Cliente</td>
+        <td>Valor Compra</td>
     </tr>
     <?php 
-        $productos = obtener_productos();
+        $productos = productos_por_mes(strtoupper($_POST["mes"]),$_POST["anho"])->fetchAll();
 
         if (!$productos){
-            echo "<tr><td colspan=5 style ='text-align:center'>No hay productos para mostrar.</td></tr>";
+            echo "<tr><td colspan=3 style ='text-align:center'>No hay ventas registradas en el año y mes de consulta.</td></tr>";
         }
         else{
             foreach($productos as $datos){
@@ -30,22 +28,22 @@ include 'operations.php';
                     <tr>
                         <td><?php echo $datos["IDPRODUCTO"]?></td>
                         <td><?php echo $datos["NOMBRE"]?></td>
-                        <td><?php echo $datos["DESCRIPCION"]?></td>
-                        <td><?php echo $datos["VALOR_UNIT"]?></td>
-                        <td><?php echo $datos["CANT_DISP"]?></td>
+                        <td><?php echo $datos["CANTIDAD"]?></td>
                     </tr>
                 <?php   
             }
         }
-        
      ?>
     </table>
     <button id="myButton" >Volver</button>
     <script type="text/javascript">
         document.getElementById("myButton").onclick = function () {
-                location.href = "/Prueba-PHP/index.php";
+                location.href = "/Prueba-PHP/reports.php";
         };
     </script>
+    
 
 </body>
 </html>
+
+

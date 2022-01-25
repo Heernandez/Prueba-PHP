@@ -1,7 +1,7 @@
 <?php
 include 'conection.php';
 
-function agregar_producto($data,$img){
+function agregar_producto($data){
     # almacena un nuevo producto, retorna true si fue exitoso o false sino se adicionó el registro
     $id = $data["id"];
     $nombre = $data["nombre"];
@@ -19,7 +19,7 @@ function agregar_producto($data,$img){
     }
     else{
 
-        $values = "("."'".$id."'".","."'".$nombre."'".","."'".$desc."'".",".$valor.",".$disp.$img.")";
+        $values = "("."'".$id."'".","."'".$nombre."'".","."'".$desc."'".",".$valor.",".$disp.")";
         #echo $values;
         try{
             $res = $conn->query("insert into product values ".$values);
@@ -152,7 +152,7 @@ function eliminar_producto($id){
     return $resultado;
 }
 
-function esta_disponible($id="10012",$cantidad=5){
+function esta_disponible($id,$cantidad){
     # valida si para un producto, hay disponible la cantidad solicitada o no
     $conn = db_connect();
     $resultado = false;
@@ -186,5 +186,65 @@ function esta_disponible($id="10012",$cantidad=5){
 
 }
 
-# terminar consultas para generar los reportes
+function lista_cliente(){
+    # se consultan los cliente existente, sino hay se retorna false
+    $conn = db_connect();
+    $resultado = false;
+    try{
+        $resultado = $conn->query("select * from customer"); 
+    }
+    catch (PDOException $e){
+        #echo $e->getMessage();
+        $resultado = false;
+    }
+    $conn = NULL;
+    return $resultado;
+
+}
+
+function obtener_cliente($id){
+  
+    # retorna la informacion de un cliente si existe
+    
+    $resultado = false;
+
+    if ($id == ""){
+        $resultado = false;
+    }
+    else{
+        $conn = db_connect();
+     
+        try{
+            $sql = "select * from customer where IDCLIENTE =".$id;
+            $res = $conn->query($sql)->fetch();
+            if ($res){
+                $resultado = $res;     
+            }
+            else{
+                $resultado = false;
+            }                              
+        }
+        catch (PDOException $e){
+            #echo $e->getMessage();
+            $resultado = false;
+        }
+
+    }
+    $conn = NULL;
+    return $resultado;
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
