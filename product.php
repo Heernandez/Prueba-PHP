@@ -7,7 +7,7 @@ include 'operations.php';
     <title></title>
 </head>
 <body>
-    <h1 align="center">LISTADO DE PRODUCTOS</h1>
+    <h1 align="center">DETALLE DE PRODUCTO</h1>
     <table width="70%" border="1px" align="center">
 
     <tr align="center">

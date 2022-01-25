@@ -1,8 +1,13 @@
 <?php
 include 'conection.php';
 
-function registrar_nuevo_producto($id,$nombre,$desc,$valor,$disp){
+function agregar_producto($data,$img){
     # almacena un nuevo producto, retorna true si fue exitoso o false sino se adicionó el registro
+    $id = $data["id"];
+    $nombre = $data["nombre"];
+    $desc = $data["descripcion"];
+    $valor = $data["valor"];
+    $disp = $data["cantidad"];
 
     $conn = db_connect();
     $resultado = false;
@@ -14,7 +19,7 @@ function registrar_nuevo_producto($id,$nombre,$desc,$valor,$disp){
     }
     else{
 
-        $values = "("."'".$id."'".","."'".$nombre."'".","."'".$desc."'".",".$valor.",".$disp.")";
+        $values = "("."'".$id."'".","."'".$nombre."'".","."'".$desc."'".",".$valor.",".$disp.$img.")";
         #echo $values;
         try{
             $res = $conn->query("insert into product values ".$values);
@@ -25,6 +30,7 @@ function registrar_nuevo_producto($id,$nombre,$desc,$valor,$disp){
             $resultado = false;
             }
         }
+    $conn = NULL;
     return $resultado;
 }
 
@@ -39,6 +45,7 @@ function obtener_productos(){
         #echo $e->getMessage();
         $resultado = false;
     }
+    $conn = NULL;
     return $resultado;
 }
 
@@ -69,13 +76,11 @@ function obtener_producto($id){
             #echo $e->getMessage();
             $resultado = false;
         }
-            
-        
 
     }
+    $conn = NULL;
     return $resultado;
-    #retorna el array con la informacion o false
-
+   
 }
 
 #function actualizar_producto($id,$nombre,$desc,$valor,$disp){
@@ -84,7 +89,7 @@ function actualizar_producto($data){
     # se usará para actualizar tanto el stock, como las demás variables en caso de que cambie las caracteristicas del producto (alza precio, cambio nombre, etc)
     
     $conn = db_connect();
-    $conn->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
+    #$conn->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
     $resultado = false;
     $id = $data["id"];
     $nombre = $data["nombre"];
@@ -115,8 +120,36 @@ function actualizar_producto($data){
     
 }
 
-function eliminar_producto(){
+function eliminar_producto($id){
     # elimina un producto
+    $conn = db_connect();
+    $resultado = false;
+    if ($id == "" ){
+        echo "El id no debe ser vacio";
+        $resultado = false;
+    }
+    else{
+        $existeProducto = obtener_producto($id);
+        if($existeProducto == true){
+            try{
+                $sql = "delete from PRODUCT where IDPRODUCTO ='".$id."'";
+                #echo "la consulta es : $sql";
+                $conn->query($sql);
+                $conn->query("commit;");
+                $resultado = true;
+                
+            }
+            catch (PDOException $e){
+                echo $e->getMessage();
+                $resultado = false;
+            }
+        }
+        else{
+            $resultado = false;
+        }
+    }
+    $conn = NULL;
+    return $resultado;
 }
 
 function esta_disponible($id="10012",$cantidad=5){
@@ -148,12 +181,10 @@ function esta_disponible($id="10012",$cantidad=5){
         #echo $e->getMessage();
         $resultado = false;
     }
+    $conn = NULL;
     return $resultado;
 
 }
-
-
-
 
 # terminar consultas para generar los reportes
 ?>
